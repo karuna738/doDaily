@@ -1,0 +1,298 @@
+<div class="profile-container">
+  <!-- Header Section -->
+  <div class="profile-header">
+    <div class="header-content">
+      <h1>Profile Settings</h1>
+      <p class="header-subtitle">Manage your account and preferences</p>
+    </div>
+  </div>
+
+  <!-- Profile Content -->
+  <div class="profile-content">
+    <!-- Sidebar with Tabs -->
+    <aside class="profile-sidebar">
+      <nav class="profile-tabs">
+        <button 
+          class="tab-button" 
+          [class.active]="activeTab === 'personal'"
+          (click)="setActiveTab('personal')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+          <span>Personal Info</span>
+        </button>
+
+        <button 
+          class="tab-button"
+          [class.active]="activeTab === 'preferences'"
+          (click)="setActiveTab('preferences')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M12 1v6m0 6v6m11-10h-6m-6 0H1M19.07 4.93l-4.24 4.24m-9.66 0l-4.24-4.24M19.07 19.07l-4.24-4.24m-9.66 0l-4.24 4.24"></path>
+          </svg>
+          <span>Preferences</span>
+        </button>
+
+        <button 
+          class="tab-button"
+          [class.active]="activeTab === 'security'"
+          (click)="setActiveTab('security')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          </svg>
+          <span>Security</span>
+        </button>
+      </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="profile-main">
+      <!-- Personal Information Tab -->
+      <div class="tab-content" *ngIf="activeTab === 'personal'">
+        <div class="section-card">
+          <h2>Personal Information</h2>
+          <p class="section-subtitle">Update your personal details and profile information</p>
+
+          <!-- Avatar Section -->
+          <div class="avatar-section">
+            <div class="avatar-display">
+              <div class="user-avatar-large">{{ profileData.avatar }}</div>
+            </div>
+            <div class="avatar-actions">
+              <label class="btn btn-secondary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                Upload Photo
+                <input type="file" accept="image/*" (change)="onFileSelected($event)" hidden>
+              </label>
+              <p class="file-hint">JPG, PNG or GIF (max. 5MB)</p>
+            </div>
+          </div>
+
+          <!-- Form Fields -->
+          <form class="profile-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Full Name</label>
+                <input type="text" class="form-input" [value]="profileData.fullName" readonly>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Email Address</label>
+                <input type="email" class="form-input" [value]="profileData.email" readonly>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Phone Number</label>
+                <input type="tel" class="form-input" [value]="profileData.phone">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Location</label>
+                <input type="text" class="form-input" [value]="profileData.location">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Job Title</label>
+                <input type="text" class="form-input" [value]="profileData.jobTitle">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Department</label>
+                <input type="text" class="form-input" [value]="profileData.department">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Bio</label>
+              <textarea class="form-textarea" [value]="profileData.bio"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Timezone</label>
+              <select class="form-input">
+                <option [selected]="profileData.timezone === 'UTC-8 (Pacific Time)'">UTC-8 (Pacific Time)</option>
+                <option>UTC-7 (Mountain Time)</option>
+                <option>UTC-6 (Central Time)</option>
+                <option>UTC-5 (Eastern Time)</option>
+                <option>UTC+0 (UTC)</option>
+                <option>UTC+1 (Central European Time)</option>
+                <option>UTC+5:30 (India Standard Time)</option>
+              </select>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="btn btn-secondary">Cancel</button>
+              <button type="button" class="btn btn-primary" (click)="saveChanges()">Save Changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Preferences Tab -->
+      <div class="tab-content" *ngIf="activeTab === 'preferences'">
+        <div class="section-card">
+          <h2>Preferences</h2>
+          <p class="section-subtitle">Customize how you experience doDaily</p>
+
+          <!-- Notification Preferences -->
+          <div class="preferences-section">
+            <h3 class="preferences-title">Notifications</h3>
+            <div class="preference-item">
+              <div class="preference-info">
+                <p class="preference-label">Email Notifications</p>
+                <p class="preference-desc">Receive updates via email</p>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" [checked]="preferences.emailNotifications">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+
+            <div class="preference-item">
+              <div class="preference-info">
+                <p class="preference-label">Push Notifications</p>
+                <p class="preference-desc">Get instant notifications</p>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" [checked]="preferences.pushNotifications">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+
+            <div class="preference-item">
+              <div class="preference-info">
+                <p class="preference-label">Weekly Digest</p>
+                <p class="preference-desc">Summary of your weekly activity</p>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" [checked]="preferences.weeklyDigest">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+
+            <div class="preference-item">
+              <div class="preference-info">
+                <p class="preference-label">Task Reminders</p>
+                <p class="preference-desc">Get reminded about upcoming tasks</p>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" [checked]="preferences.taskReminders">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Display Preferences -->
+          <div class="preferences-section">
+            <h3 class="preferences-title">Display</h3>
+            
+            <div class="preference-item">
+              <div class="preference-info">
+                <p class="preference-label">Theme</p>
+                <p class="preference-desc">Choose your preferred theme</p>
+              </div>
+              <select class="form-input select-small">
+                <option>Light</option>
+                <option selected>Auto</option>
+                <option>Dark</option>
+              </select>
+            </div>
+
+            <div class="preference-item">
+              <div class="preference-info">
+                <p class="preference-label">Language</p>
+                <p class="preference-desc">Select your preferred language</p>
+              </div>
+              <select class="form-input select-small">
+                <option selected>English</option>
+                <option>Spanish</option>
+                <option>French</option>
+                <option>German</option>
+                <option>Japanese</option>
+              </select>
+            </div>
+
+            <div class="preference-item">
+              <div class="preference-info">
+                <p class="preference-label">Date Format</p>
+                <p class="preference-desc">Select how dates are displayed</p>
+              </div>
+              <select class="form-input select-small">
+                <option selected>MM/DD/YYYY</option>
+                <option>DD/MM/YYYY</option>
+                <option>YYYY-MM-DD</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary">Cancel</button>
+            <button type="button" class="btn btn-primary" (click)="saveChanges()">Save Preferences</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Security Tab -->
+      <div class="tab-content" *ngIf="activeTab === 'security'">
+        <div class="section-card">
+          <h2>Security</h2>
+          <p class="section-subtitle">Manage your account security and login activity</p>
+
+          <!-- Password Section -->
+          <div class="security-section">
+            <h3 class="security-title">Password</h3>
+            <p class="security-desc">Last changed 3 months ago</p>
+            <button class="btn btn-secondary">Change Password</button>
+          </div>
+
+          <!-- Two-Factor Authentication -->
+          <div class="security-section">
+            <div class="security-header">
+              <div>
+                <h3 class="security-title">Two-Factor Authentication</h3>
+                <p class="security-desc">Add an extra layer of security to your account</p>
+              </div>
+              <span class="badge badge-warning">Disabled</span>
+            </div>
+            <button class="btn btn-secondary">Enable 2FA</button>
+          </div>
+
+          <!-- Login Sessions -->
+          <div class="security-section">
+            <h3 class="security-title">Active Sessions</h3>
+            <p class="security-desc">Manage your active login sessions</p>
+            
+            <div class="session-item">
+              <div class="session-info">
+                <p class="session-device">Chrome - Windows</p>
+                <p class="session-location">San Francisco, CA • Last active: Today</p>
+              </div>
+              <span class="badge badge-success">Current</span>
+            </div>
+
+            <div class="session-item">
+              <div class="session-info">
+                <p class="session-device">Safari - iPhone</p>
+                <p class="session-location">San Francisco, CA • Last active: 2 days ago</p>
+              </div>
+              <button class="btn-logout">Sign Out</button>
+            </div>
+          </div>
+
+          <!-- Account Deletion -->
+          <div class="security-section danger-section">
+            <h3 class="security-title danger">Delete Account</h3>
+            <p class="security-desc">Permanently delete your account and all associated data</p>
+            <button class="btn btn-danger">Delete Account</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>

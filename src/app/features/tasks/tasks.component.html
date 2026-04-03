@@ -1,0 +1,254 @@
+<div class="tasks-container">
+  <!-- Header Section -->
+  <div class="tasks-header">
+    <div class="header-content">
+      <h1>Tasks</h1>
+      <p class="header-subtitle">
+        <span *ngIf="selectedCollection === 'all'">Organize and track your work</span>
+        <span *ngIf="selectedCollection !== 'all' && currentCollection">
+          <span class="collection-indicator" [style.color]="currentCollection.color">
+            ● {{ currentCollection.name }}
+          </span>
+          collection
+        </span>
+      </p>
+    </div>
+    <button class="btn btn-primary" (click)="createTask()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="12" y1="5" x2="12" y2="19"></line>
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+      </svg>
+      New Task
+    </button>
+  </div>
+
+  <!-- Stats Section -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <p class="stat-label">Total Tasks</p>
+      <h3 class="stat-value">{{ stats.total }}</h3>
+    </div>
+    <div class="stat-card">
+      <p class="stat-label">In Progress</p>
+      <h3 class="stat-value">{{ stats.inProgress }}</h3>
+    </div>
+    <div class="stat-card">
+      <p class="stat-label">Completed</p>
+      <h3 class="stat-value">{{ stats.completed }}</h3>
+    </div>
+    <div class="stat-card">
+      <p class="stat-label">High Priority</p>
+      <h3 class="stat-value">{{ stats.highPriority }}</h3>
+    </div>
+  </div>
+
+  <!-- Controls Section -->
+  <div class="controls-section">
+    <div class="search-box">
+      <input 
+        type="text" 
+        placeholder="Search tasks..." 
+        [(ngModel)]="searchQuery"
+        class="search-input">
+      <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"></circle>
+        <path d="m21 21-4.35-4.35"></path>
+      </svg>
+    </div>
+
+    <div class="filter-controls">
+      <!-- View Mode -->
+      <div class="view-toggle">
+        <button 
+          class="toggle-btn" 
+          [class.active]="viewMode === 'list'"
+          (click)="setViewMode('list')"
+          title="List View">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="8" y1="6" x2="21" y2="6"></line>
+            <line x1="8" y1="12" x2="21" y2="12"></line>
+            <line x1="8" y1="18" x2="21" y2="18"></line>
+            <line x1="3" y1="6" x2="3.01" y2="6"></line>
+            <line x1="3" y1="12" x2="3.01" y2="12"></line>
+            <line x1="3" y1="18" x2="3.01" y2="18"></line>
+          </svg>
+        </button>
+        <button 
+          class="toggle-btn" 
+          [class.active]="viewMode === 'kanban'"
+          (click)="setViewMode('kanban')"
+          title="Kanban View">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Status Filter -->
+      <select class="filter-select" [(ngModel)]="filterStatus" (change)="setFilterStatus(filterStatus)" *ngIf="selectedCollection === 'all'">
+        <option value="all">All Status</option>
+        <option value="todo">To Do</option>
+        <option value="in-progress">In Progress</option>
+        <option value="completed">Completed</option>
+      </select>
+
+      <!-- Priority Filter -->
+      <select class="filter-select" [(ngModel)]="filterPriority" (change)="setFilterPriority(filterPriority)" *ngIf="selectedCollection === 'all'">
+        <option value="all">All Priorities</option>
+        <option value="high">High Priority</option>
+        <option value="medium">Medium Priority</option>
+        <option value="low">Low Priority</option>
+      </select>
+
+      <!-- Sort -->
+      <select class="filter-select" [(ngModel)]="sortBy" (change)="setSortBy(sortBy)">
+        <option value="due-date">Due Date</option>
+        <option value="priority">Priority</option>
+        <option value="title">Title</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- List View -->
+  <div class="tasks-view" *ngIf="viewMode === 'list'">
+    <div class="tasks-list">
+      <div class="task-card" *ngFor="let task of filteredTasks" [class]="'priority-' + task.priority" (click)="viewTask(task)" style="cursor: pointer;">
+        <div class="task-header">
+          <div class="task-title-section">
+            <h3 class="task-title">{{ task.title }}</h3>
+            <span class="task-category">{{ task.category }}</span>
+          </div>
+          <div class="task-actions">
+            <button class="btn-action" title="Edit">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+              </svg>
+            </button>
+            <button class="btn-action" title="Delete">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <p class="task-description">{{ task.description }}</p>
+
+        <div class="task-progress">
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="task.progress"></div>
+          </div>
+          <span class="progress-text">{{ task.progress }}%</span>
+        </div>
+
+        <div class="task-footer">
+          <div class="task-meta">
+            <span class="priority-badge" [class]="'priority-' + task.priority">{{ task.priority }}</span>
+            <span class="status-badge" [class]="'status-' + task.status.replace('-', '')">{{ task.status }}</span>
+            <span class="due-date">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+              {{ formatDate(task.dueDate) }}
+            </span>
+          </div>
+          <span class="assignee">{{ task.assignee }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="filteredTasks.length === 0">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M9 11H7v6h2V11zm4 0h-2v6h2V11zm4 0h-2v6h2V11z"></path>
+        <path d="M20 8H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2z"></path>
+      </svg>
+      <p>No tasks found</p>
+      <button class="btn btn-secondary" (click)="createTask()">Create your first task</button>
+    </div>
+  </div>
+
+  <!-- Kanban View -->
+  <div class="kanban-view" *ngIf="viewMode === 'kanban'">
+    <!-- To Do Column -->
+    <div class="kanban-column">
+      <div class="column-header">
+        <h3>To Do</h3>
+        <span class="column-count">{{ tasksByStatus.todo.length }}</span>
+      </div>
+      <div class="kanban-cards">
+        <div class="kanban-card" *ngFor="let task of tasksByStatus.todo" [class]="'priority-' + task.priority">
+          <div class="card-header">
+            <span class="priority-dot"></span>
+            <span class="priority-badge" [class]="'priority-' + task.priority">{{ task.priority }}</span>
+          </div>
+          <h4 class="card-title">{{ task.title }}</h4>
+          <p class="card-description">{{ task.description }}</p>
+          <div class="card-footer">
+            <span class="category-badge">{{ task.category }}</span>
+            <span class="due-date-small">{{ formatDate(task.dueDate) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- In Progress Column -->
+    <div class="kanban-column">
+      <div class="column-header">
+        <h3>In Progress</h3>
+        <span class="column-count">{{ tasksByStatus['in-progress'].length }}</span>
+      </div>
+      <div class="kanban-cards">
+        <div class="kanban-card" *ngFor="let task of tasksByStatus['in-progress']" [class]="'priority-' + task.priority">
+          <div class="card-header">
+            <span class="priority-dot"></span>
+            <span class="priority-badge" [class]="'priority-' + task.priority">{{ task.priority }}</span>
+          </div>
+          <h4 class="card-title">{{ task.title }}</h4>
+          <p class="card-description">{{ task.description }}</p>
+          <div class="card-progress">
+            <div class="progress-bar-small">
+              <div class="progress-fill" [style.width.%]="task.progress"></div>
+            </div>
+            <span class="progress-percent">{{ task.progress }}%</span>
+          </div>
+          <div class="card-footer">
+            <span class="category-badge">{{ task.category }}</span>
+            <span class="due-date-small">{{ formatDate(task.dueDate) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Completed Column -->
+    <div class="kanban-column">
+      <div class="column-header">
+        <h3>Completed</h3>
+        <span class="column-count">{{ tasksByStatus.completed.length }}</span>
+      </div>
+      <div class="kanban-cards">
+        <div class="kanban-card completed" *ngFor="let task of tasksByStatus.completed">
+          <div class="card-header">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span class="priority-badge" [class]="'priority-' + task.priority">{{ task.priority }}</span>
+          </div>
+          <h4 class="card-title">{{ task.title }}</h4>
+          <p class="card-description">{{ task.description }}</p>
+          <div class="card-footer">
+            <span class="category-badge">{{ task.category }}</span>
+            <span class="due-date-small">{{ formatDate(task.dueDate) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

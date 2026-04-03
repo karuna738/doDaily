@@ -1,0 +1,114 @@
+<aside class="sidebar">
+  <nav class="sidebar-nav">
+    <!-- Main Section -->
+    <div class="nav-section">
+      <h4 class="nav-label">Menu</h4>
+      <ul class="nav-list">
+        <li>
+          <a routerLink="/dashboard" [routerLinkActiveOptions]="{ exact: true }" routerLinkActive="active" class="nav-link">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+              <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/tasks" routerLinkActive="active" class="nav-link">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 11H7v6h2V11zm4 0h-2v6h2V11zm4 0h-2v6h2V11z"></path>
+              <path d="M20 8H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2z"></path>
+            </svg>
+            <span>Tasks</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/projects" routerLinkActive="active" class="nav-link">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+              <polyline points="17 21 17 13 7 13 7 21"></polyline>
+              <polyline points="7 5 7 13 17 13 17 5"></polyline>
+            </svg>
+            <span>Projects</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/messages" routerLinkActive="active" class="nav-link">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+            <span>Messages</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Collections Section -->
+    <div class="nav-section">
+      <div class="nav-label-header">
+        <h4 class="nav-label">Collections</h4>
+        <button class="btn-add-collection" title="Add Collection" (click)="toggleAddCollection()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Add Collection Form -->
+      <div class="add-collection-form" *ngIf="showAddCollection">
+        <input type="text" placeholder="Collection name" [(ngModel)]="newCollectionName" (keydown.enter)="addCollection()" />
+        <div class="color-picker">
+          <button *ngFor="let color of availableColors" class="color-option" [style.background-color]="color" [class.selected]="newCollectionColor === color" (click)="selectColor(color)"></button>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-secondary btn-sm" (click)="toggleAddCollection()">Cancel</button>
+          <button class="btn btn-primary btn-sm" (click)="addCollection()" [disabled]="!newCollectionName.trim()">Add</button>
+        </div>
+      </div>
+
+      <ul class="nav-list">
+        <li>
+          <a href="#" class="nav-link" [class.active]="selectedCollection === 'all'" (click)="selectCollection('all')">
+            <div class="collection-icon" style="background-color: var(--primary);">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+              </svg>
+            </div>
+            <span>All Tasks</span>
+          </a>
+        </li>
+        <li *ngFor="let collection of collections">
+          <a href="#" class="nav-link" [class.active]="selectedCollection === collection.id" (click)="selectCollection(collection.id)">
+            <div class="collection-icon" [style.background-color]="collection.color"></div>
+            <span>{{ collection.name }}</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Settings Section -->
+    <div class="nav-section nav-section-bottom">
+      <ul class="nav-list">
+        <li>
+          <a routerLink="/settings" routerLinkActive="active" class="nav-link">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M12 1v6m0 6v6m11-10h-6m-6 0H1M19.07 4.93l-4.24 4.24m-9.66 0l-4.24-4.24M19.07 19.07l-4.24-4.24m-9.66 0l-4.24 4.24"></path>
+            </svg>
+            <span>Settings</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/profile" routerLinkActive="active" class="nav-link">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            <span>Profile</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</aside>

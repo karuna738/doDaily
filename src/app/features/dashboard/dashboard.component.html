@@ -1,0 +1,149 @@
+<div class="dashboard">
+  <!-- Header -->
+  <div class="dashboard-header">
+    <div>
+      <h1 class="page-title">Dashboard</h1>
+      <p class="page-subtitle">Welcome back! Here's your daily overview</p>
+    </div>
+    <button class="btn btn-primary">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="12" y1="5" x2="12" y2="19"></line>
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+      </svg>
+      New Task
+    </button>
+  </div>
+
+  <!-- Stats Grid -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon" style="background: rgba(94, 96, 206, 0.1); color: var(--primary)">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="12 3 20 7.5 20 16.5 12 21 4 16.5 4 7.5 12 3"></polyline>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <p class="stat-label">Total Tasks</p>
+        <h3 class="stat-value">24</h3>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon" style="background: rgba(26, 188, 156, 0.1); color: var(--success)">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <p class="stat-label">Completed</p>
+        <h3 class="stat-value">18</h3>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon" style="background: rgba(243, 156, 18, 0.1); color: var(--warning)">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <p class="stat-label">In Progress</p>
+        <h3 class="stat-value">4</h3>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon" style="background: rgba(231, 76, 60, 0.1); color: var(--danger)">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="16"></line>
+          <line x1="8" y1="12" x2="16" y2="12"></line>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <p class="stat-label">Overdue</p>
+        <h3 class="stat-value">2</h3>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="dashboard-grid">
+    <!-- Tasks Section -->
+    <div class="section-card">
+      <div class="section-header">
+        <h2>Today's Tasks</h2>
+        <a href="#" class="link-primary">View All</a>
+      </div>
+      <div class="tasks-list">
+        <div class="task-item">
+          <div class="task-checkbox">
+            <input type="checkbox" id="task1">
+            <label for="task1"></label>
+          </div>
+          <div class="task-content">
+            <p class="task-title">Complete project proposal</p>
+            <p class="task-meta">Due: Today at 5:00 PM</p>
+          </div>
+          <span class="task-priority priority-high">High</span>
+        </div>
+
+        <div class="task-item">
+          <div class="task-checkbox">
+            <input type="checkbox" id="task2" checked>
+            <label for="task2"></label>
+          </div>
+          <div class="task-content">
+            <p class="task-title completed">Review code changes</p>
+            <p class="task-meta">Due: Today at 2:00 PM</p>
+          </div>
+          <span class="task-priority priority-medium">Medium</span>
+        </div>
+
+        <div class="task-item">
+          <div class="task-checkbox">
+            <input type="checkbox" id="task3">
+            <label for="task3"></label>
+          </div>
+          <div class="task-content">
+            <p class="task-title">Update documentation</p>
+            <p class="task-meta">Due: Tomorrow at 10:00 AM</p>
+          </div>
+          <span class="task-priority priority-low">Low</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Upcoming Events -->
+    <div class="section-card">
+      <div class="section-header">
+        <h2>Upcoming Events</h2>
+        <a href="#" class="link-primary">View All</a>
+      </div>
+      <div class="events-list">
+        <div class="event-item">
+          <div class="event-time">2:00 PM</div>
+          <div class="event-content">
+            <p class="event-title">Team Standup</p>
+            <p class="event-meta">Conference Room A</p>
+          </div>
+        </div>
+        <div class="event-item">
+          <div class="event-time">4:30 PM</div>
+          <div class="event-content">
+            <p class="event-title">Client Meeting</p>
+            <p class="event-meta">Virtual - Zoom</p>
+          </div>
+        </div>
+        <div class="event-item">
+          <div class="event-time">6:00 PM</div>
+          <div class="event-content">
+            <p class="event-title">Project Review</p>
+            <p class="event-meta">Conference Room B</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

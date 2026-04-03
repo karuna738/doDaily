@@ -1,0 +1,355 @@
+<div class="projects-container">
+  <!-- Header Section -->
+  <div class="projects-header">
+    <div class="header-content">
+      <h1>Projects</h1>
+      <p class="header-subtitle">
+        <span *ngIf="selectedCollection === 'all'">Manage and track all your projects</span>
+        <span *ngIf="selectedCollection !== 'all' && currentCollection">
+          <span class="collection-indicator" [style.color]="currentCollection.color">
+            ● {{ currentCollection.name }}
+          </span>
+          collection
+        </span>
+      </p>
+    </div>
+    <button class="btn btn-primary" (click)="createProject()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="12" y1="5" x2="12" y2="19"></line>
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+      </svg>
+      New Project
+    </button>
+  </div>
+
+  <!-- Stats Section -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <p class="stat-label">Total Projects</p>
+      <h3 class="stat-value">{{ stats.total }}</h3>
+    </div>
+    <div class="stat-card">
+      <p class="stat-label">Active</p>
+      <h3 class="stat-value">{{ stats.active }}</h3>
+    </div>
+    <div class="stat-card">
+      <p class="stat-label">Planning</p>
+      <h3 class="stat-value">{{ stats.planning }}</h3>
+    </div>
+    <div class="stat-card">
+      <p class="stat-label">Completed</p>
+      <h3 class="stat-value">{{ stats.completed }}</h3>
+    </div>
+  </div>
+
+  <!-- Controls Section -->
+  <div class="controls-section" *ngIf="selectedCollection === 'all'">
+    <div class="search-box">
+      <input
+        type="text"
+        placeholder="Search projects..."
+        [(ngModel)]="searchQuery"
+        class="search-input">
+      <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"></circle>
+        <path d="m21 21-4.35-4.35"></path>
+      </svg>
+    </div>
+
+    <div class="filters-group">
+      <!-- View Mode Toggle -->
+      <div class="view-toggle">
+        <button
+          type="button"
+          class="toggle-btn"
+          [class.active]="viewMode === 'grid'"
+          (click)="setViewMode('grid')"
+          title="Grid view">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+        </button>
+        <button
+          type="button"
+          class="toggle-btn"
+          [class.active]="viewMode === 'list'"
+          (click)="setViewMode('list')"
+          title="List view">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="8" y1="6" x2="21" y2="6"></line>
+            <line x1="8" y1="12" x2="21" y2="12"></line>
+            <line x1="8" y1="18" x2="21" y2="18"></line>
+            <line x1="3" y1="6" x2="3.01" y2="6"></line>
+            <line x1="3" y1="12" x2="3.01" y2="12"></line>
+            <line x1="3" y1="18" x2="3.01" y2="18"></line>
+          </svg>
+        </button>
+        <button
+          type="button"
+          class="toggle-btn"
+          [class.active]="viewMode === 'timeline'"
+          (click)="setViewMode('timeline')"
+          title="Timeline view">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="5" r="1"></circle>
+            <circle cx="12" cy="12" r="1"></circle>
+            <circle cx="12" cy="19" r="1"></circle>
+            <line x1="12" y1="6" x2="12" y2="11"></line>
+            <line x1="12" y1="13" x2="12" y2="18"></line>
+            <polyline points="18 9 15 12 18 15"></polyline>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Status Filter -->
+      <select [(ngModel)]="filterStatus" (change)="setFilterStatus(filterStatus)" class="filter-select">
+        <option value="all">All Status</option>
+        <option value="active">Active</option>
+        <option value="planning">Planning</option>
+        <option value="completed">Completed</option>
+        <option value="on-hold">On Hold</option>
+      </select>
+
+      <!-- Sort -->
+      <select [(ngModel)]="sortBy" (change)="setSortBy(sortBy)" class="filter-select">
+        <option value="name">Sort by Name</option>
+        <option value="progress">Sort by Progress</option>
+        <option value="date">Sort by End Date</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Grid View -->
+  <div *ngIf="viewMode === 'grid'" class="projects-grid">
+    <div *ngFor="let project of filteredProjects" class="project-card" [style.border-left-color]="project.color">
+      <div class="card-header">
+        <div class="card-title-section">
+          <h3 class="card-title">{{ project.name }}</h3>
+          <span class="status-badge" [className]="'status-' + project.status">
+            {{ project.status | titlecase }}
+          </span>
+        </div>
+        <button class="btn-menu" title="More options">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <circle cx="12" cy="5" r="2"></circle>
+            <circle cx="12" cy="12" r="2"></circle>
+            <circle cx="12" cy="19" r="2"></circle>
+          </svg>
+        </button>
+      </div>
+
+      <p class="card-description">{{ project.description }}</p>
+
+      <!-- Progress Bar -->
+      <div class="progress-section">
+        <div class="progress-header">
+          <span class="progress-label">Progress</span>
+          <span class="progress-value">{{ project.progress }}%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="project.progress" [style.background-color]="project.color"></div>
+        </div>
+      </div>
+
+      <!-- Info Row -->
+      <div class="card-info">
+        <div class="info-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          <span>{{ formatDate(project.endDate) }}</span>
+        </div>
+        <div class="info-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+          <span>{{ project.members.length }}</span>
+        </div>
+        <div class="info-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+            <path d="M16 4V2m-8 2V2M2 11h20"></path>
+          </svg>
+          <span>{{ project.completedTasks }}/{{ project.tasks }}</span>
+        </div>
+      </div>
+
+      <!-- Members -->
+      <div class="card-members">
+        <div *ngFor="let member of project.members.slice(0, 3)" class="member-avatar" [title]="member.name">
+          {{ member.avatar }}
+        </div>
+        <div *ngIf="project.members.length > 3" class="member-count">
+          +{{ project.members.length - 3 }}
+        </div>
+      </div>
+
+      <!-- Card Actions -->
+      <div class="card-actions">
+        <button class="btn btn-small btn-secondary" (click)="viewProject(project)">View</button>
+        <button class="btn btn-small btn-secondary" (click)="editProject(project)">Edit</button>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="filteredProjects.length === 0" class="empty-state">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+        <polyline points="13 2 13 9 20 9"></polyline>
+      </svg>
+      <h3>No projects found</h3>
+      <p>Create a new project to get started</p>
+      <button class="btn btn-primary" (click)="createProject()">Create First Project</button>
+    </div>
+  </div>
+
+  <!-- List View -->
+  <div *ngIf="viewMode === 'list'" class="projects-list">
+    <table class="projects-table">
+      <thead>
+        <tr>
+          <th>Project Name</th>
+          <th>Category</th>
+          <th>Status</th>
+          <th>Progress</th>
+          <th>End Date</th>
+          <th>Members</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let project of filteredProjects" class="table-row">
+          <td class="cell-name">
+            <div class="name-cell">
+              <div class="color-dot" [style.background-color]="project.color"></div>
+              <div>
+                <div class="name-text">{{ project.name }}</div>
+                <div class="desc-text">{{ project.description }}</div>
+              </div>
+            </div>
+          </td>
+          <td>{{ project.category }}</td>
+          <td>
+            <span class="status-badge" [className]="'status-' + project.status">
+              {{ project.status | titlecase }}
+            </span>
+          </td>
+          <td>
+            <div class="progress-inline">
+              <div class="progress-bar-small">
+                <div class="progress-fill" [style.width.%]="project.progress" [style.background-color]="project.color"></div>
+              </div>
+              <span>{{ project.progress }}%</span>
+            </div>
+          </td>
+          <td>{{ formatDate(project.endDate) }}</td>
+          <td>
+            <div class="members-inline">
+              <div *ngFor="let member of project.members.slice(0, 2)" class="member-avatar-small" [title]="member.name">
+                {{ member.avatar }}
+              </div>
+              <span *ngIf="project.members.length > 2" class="more-members">+{{ project.members.length - 2 }}</span>
+            </div>
+          </td>
+          <td>
+            <div class="table-actions">
+              <button class="btn-action" (click)="viewProject(project)" title="View">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+              </button>
+              <button class="btn-action" (click)="editProject(project)" title="Edit">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
+              </button>
+              <button class="btn-action" (click)="deleteProject(project.id)" title="Delete">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                </svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Empty State -->
+    <div *ngIf="filteredProjects.length === 0" class="empty-state">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+        <polyline points="13 2 13 9 20 9"></polyline>
+      </svg>
+      <h3>No projects found</h3>
+      <p>Create a new project to get started</p>
+      <button class="btn btn-primary" (click)="createProject()">Create First Project</button>
+    </div>
+  </div>
+
+  <!-- Timeline View -->
+  <div *ngIf="viewMode === 'timeline'" class="projects-timeline">
+    <div *ngFor="let project of timelineProjects" class="timeline-item">
+      <div class="timeline-marker" [style.background-color]="project.color"></div>
+      <div class="timeline-content">
+        <div class="timeline-header">
+          <h3>{{ project.name }}</h3>
+          <span class="status-badge" [className]="'status-' + project.status">
+            {{ project.status | titlecase }}
+          </span>
+        </div>
+
+        <p class="timeline-description">{{ project.description }}</p>
+
+        <div class="timeline-dates">
+          <div class="date-item">
+            <span class="date-label">Start:</span>
+            <span>{{ formatDate(project.startDate) }}</span>
+          </div>
+          <div class="date-item">
+            <span class="date-label">End:</span>
+            <span>{{ formatDate(project.endDate) }}</span>
+          </div>
+          <div class="date-item" [class.ended]="getDaysRemaining(project.endDate) < 0">
+            <span class="date-label">Days Remaining:</span>
+            <span>{{ getDaysRemaining(project.endDate) }}</span>
+          </div>
+        </div>
+
+        <div class="timeline-progress">
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="project.progress" [style.background-color]="project.color"></div>
+          </div>
+          <span class="progress-text">{{ project.progress }}% Complete</span>
+        </div>
+
+        <div class="timeline-footer">
+          <button class="btn btn-small btn-secondary" (click)="viewProject(project)">View</button>
+          <button class="btn btn-small btn-secondary" (click)="editProject(project)">Edit</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="filteredProjects.length === 0" class="empty-state">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+        <polyline points="13 2 13 9 20 9"></polyline>
+      </svg>
+      <h3>No projects found</h3>
+      <p>Create a new project to get started</p>
+      <button class="btn btn-primary" (click)="createProject()">Create First Project</button>
+    </div>
+  </div>
+</div>

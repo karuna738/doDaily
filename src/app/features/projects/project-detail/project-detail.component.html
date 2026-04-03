@@ -1,0 +1,262 @@
+<div class="project-detail-container" *ngIf="project">
+  <!-- Header -->
+  <div class="project-detail-header">
+    <button class="btn-back" (click)="backToProjects()" title="Back to Projects">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="19" y1="12" x2="5" y2="12"></line>
+        <polyline points="12 19 5 12 12 5"></polyline>
+      </svg>
+      Back
+    </button>
+
+    <div class="header-actions">
+      <button class="btn btn-secondary" (click)="editProject()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+        </svg>
+        Edit
+      </button>
+      <button class="btn btn-danger" (click)="deleteProject()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="3 6 5 6 21 6"></polyline>
+          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+        </svg>
+        Delete
+      </button>
+    </div>
+  </div>
+
+  <div class="project-detail-content">
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Title & Status -->
+      <div class="project-title-section">
+        <div class="title-with-color">
+          <div class="color-indicator" [style.background-color]="project.color"></div>
+          <h1 class="project-title">{{ project.name }}</h1>
+        </div>
+        <div class="project-meta">
+          <span class="category-badge">{{ project.category }}</span>
+          <span class="status-badge" [style.background-color]="getStatusColor(project.status)">
+            {{ getStatusLabel(project.status) }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="description-section">
+        <h3>Description</h3>
+        <p>{{ project.description }}</p>
+      </div>
+
+      <!-- Progress -->
+      <div class="progress-section">
+        <div class="progress-header">
+          <h3>Project Progress</h3>
+          <span class="progress-value">{{ project.progress }}%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="project.progress" [style.background-color]="project.color"></div>
+        </div>
+      </div>
+
+      <!-- Task Status -->
+      <div class="task-status-section">
+        <h3>Task Completion</h3>
+        <div class="task-stats">
+          <div class="task-stat">
+            <div class="stat-value" [style.color]="project.color">{{ project.completedTasks }}</div>
+            <div class="stat-label">Completed</div>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="task-stat">
+            <div class="stat-value">{{ project.tasks - project.completedTasks }}</div>
+            <div class="stat-label">Remaining</div>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="task-stat">
+            <div class="stat-value">{{ project.tasks }}</div>
+            <div class="stat-label">Total Tasks</div>
+          </div>
+        </div>
+        <div class="task-progress-bar">
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="getTaskPercentage()" [style.background-color]="project.color"></div>
+          </div>
+          <span class="task-percentage">{{ getTaskPercentage() }}% Complete</span>
+        </div>
+      </div>
+
+      <!-- Timeline -->
+      <div class="timeline-section">
+        <h3>Timeline</h3>
+        <div class="timeline-grid">
+          <div class="timeline-item">
+            <div class="timeline-label">Start Date</div>
+            <div class="timeline-value">{{ formatDate(project.startDate) }}</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-label">End Date</div>
+            <div class="timeline-value">{{ formatDate(project.endDate) }}</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-label">Duration</div>
+            <div class="timeline-value">
+              {{ getDurationDays(project.startDate, project.endDate) }} days
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-label">Time Remaining</div>
+            <div class="timeline-value" [class.overdue]="isOverdue(project.endDate)">
+              <span *ngIf="!isOverdue(project.endDate)">{{ getDaysRemaining(project.endDate) }} days</span>
+              <span *ngIf="isOverdue(project.endDate)">Overdue by {{ getAbsDaysRemaining(project.endDate) }} days</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Team Members -->
+      <div class="team-section">
+        <h3>Team Members ({{ project.members.length }})</h3>
+        <div class="team-grid">
+          <div *ngFor="let member of project.members" class="team-member">
+            <div class="member-avatar">{{ member.avatar }}</div>
+            <div class="member-info">
+              <p class="member-name">{{ member.name }}</p>
+              <span class="member-role">{{ member.role }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Updates & Activity -->
+      <div class="updates-section">
+        <h3>Project Updates</h3>
+
+        <div class="add-update">
+          <div class="update-avatar">YU</div>
+          <div class="update-input-area">
+            <textarea
+              placeholder="Share a project update or milestone..."
+              [(ngModel)]="updateMessage"
+              class="update-input"
+              rows="3"></textarea>
+            <button
+              class="btn btn-primary btn-small"
+              (click)="addUpdate()"
+              [disabled]="!updateMessage.trim() || isSubmittingUpdate">
+              <span *ngIf="!isSubmittingUpdate">Post Update</span>
+              <span *ngIf="isSubmittingUpdate">Posting...</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="updates-list">
+          <div *ngFor="let update of project.updates" class="update-item">
+            <div class="update-avatar">{{ update.avatar }}</div>
+            <div class="update-content">
+              <div class="update-header">
+                <span class="update-author">{{ update.author }}</span>
+                <span class="update-time">{{ formatTime(update.timestamp) }}</span>
+              </div>
+              <p class="update-text">{{ update.message }}</p>
+            </div>
+          </div>
+
+          <div *ngIf="!project.updates || project.updates.length === 0" class="no-updates">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+            <p>No updates yet. Start by posting the first update!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <!-- Status Card -->
+      <div class="card">
+        <h4>Status</h4>
+        <div class="status-display" *ngIf="!isEditingStatus">
+          <span class="status-badge" [style.background-color]="getStatusColor(project.status)">
+            {{ getStatusLabel(project.status) }}
+          </span>
+          <button class="btn-edit-status" (click)="isEditingStatus = true">Change</button>
+        </div>
+        <div class="status-edit" *ngIf="isEditingStatus">
+          <button
+            *ngFor="let status of ['planning', 'active', 'on-hold', 'completed']"
+            class="status-option"
+            [class.selected]="selectedStatus === status"
+            (click)="changeStatus(status)">
+            {{ getStatusLabel(status) }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Budget Card -->
+      <div class="card">
+        <h4>Budget</h4>
+        <div class="budget-display">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="1"></circle>
+            <path d="M12 1v6m0 6v6m4.22-13.22l-4.24 4.24m0 5.96l4.24 4.24M4.34 4.34l4.24 4.24m0 5.96l-4.24 4.24"></path>
+          </svg>
+          <span class="budget-amount">{{ project.budget }}</span>
+        </div>
+      </div>
+
+      <!-- Category Card -->
+      <div class="card">
+        <h4>Category</h4>
+        <div class="category-display">
+          <span class="category-badge">{{ project.category }}</span>
+        </div>
+      </div>
+
+      <!-- Quick Stats Card -->
+      <div class="card">
+        <h4>Quick Stats</h4>
+        <div class="quick-stats">
+          <div class="quick-stat">
+            <span class="stat-number" [style.color]="project.color">{{ project.tasks }}</span>
+            <span class="stat-name">Total Tasks</span>
+          </div>
+          <div class="quick-stat">
+            <span class="stat-number" [style.color]="project.color">{{ project.members.length }}</span>
+            <span class="stat-name">Team Members</span>
+          </div>
+          <div class="quick-stat">
+            <span class="stat-number" [style.color]="project.color">{{ project.progress }}%</span>
+            <span class="stat-name">Progress</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Start Work Card -->
+      <div class="card action-card">
+        <button class="btn btn-primary" style="width: 100%;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          Start New Task
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Empty State -->
+<div *ngIf="!project" class="empty-state">
+  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+    <polyline points="17 21 17 13 7 13 7 21"></polyline>
+    <polyline points="7 5 7 13 17 13 17 5"></polyline>
+  </svg>
+  <h3>Project not found</h3>
+  <p>The project you're looking for doesn't exist</p>
+  <button class="btn btn-primary" (click)="backToProjects()">Back to Projects</button>
+</div>

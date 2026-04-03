@@ -1,0 +1,237 @@
+<div class="settings-container">
+  <!-- Header Section -->
+  <div class="settings-header">
+    <div class="header-content">
+      <h1>Settings</h1>
+      <p class="header-subtitle">Customize your application preferences</p>
+    </div>
+  </div>
+
+  <!-- Settings Content -->
+  <div class="settings-content">
+    <!-- Sidebar with Tabs -->
+    <aside class="settings-sidebar">
+      <nav class="settings-tabs">
+        <button 
+          class="tab-button" 
+          [class.active]="activeTab === 'general'"
+          (click)="setActiveTab('general')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M12 1v6m0 6v6m11-10h-6m-6 0H1M19.07 4.93l-4.24 4.24m-9.66 0l-4.24-4.24M19.07 19.07l-4.24-4.24m-9.66 0l-4.24 4.24"></path>
+          </svg>
+          <span>General</span>
+        </button>
+
+        <button 
+          class="tab-button"
+          [class.active]="activeTab === 'account'"
+          (click)="setActiveTab('account')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+          <span>Account</span>
+        </button>
+
+        <button 
+          class="tab-button"
+          [class.active]="activeTab === 'notifications'"
+          (click)="setActiveTab('notifications')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          <span>Notifications</span>
+        </button>
+
+        <button 
+          class="tab-button"
+          [class.active]="activeTab === 'data'"
+          (click)="setActiveTab('data')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+          </svg>
+          <span>Data & Privacy</span>
+        </button>
+      </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="settings-main">
+      <!-- General Settings Tab -->
+      <div class="tab-content" *ngIf="activeTab === 'general'">
+        <div class="section-card">
+          <h2>General Settings</h2>
+          <p class="section-subtitle">Customize your application experience</p>
+
+          <div class="settings-list">
+            <div class="setting-item" *ngFor="let setting of generalSettings">
+              <div class="setting-info">
+                <p class="setting-label">{{ setting.label }}</p>
+                <p class="setting-description">{{ setting.description }}</p>
+              </div>
+              <div class="setting-control">
+                <!-- Toggle -->
+                <label class="toggle-switch" *ngIf="setting.type === 'toggle'">
+                  <input type="checkbox" [checked]="setting.value" (change)="onSettingChange(setting.id, $any($event).target.checked)">
+                  <span class="toggle-slider"></span>
+                </label>
+
+                <!-- Select -->
+                <select class="form-input select-small" *ngIf="setting.type === 'select'" [value]="setting.value">
+                  <option *ngFor="let option of setting.options" [value]="option.value">{{ option.label }}</option>
+                </select>
+
+                <!-- Input -->
+                <input type="text" class="form-input input-small" *ngIf="setting.type === 'input'" [value]="setting.value">
+
+                <!-- Text Display -->
+                <span class="setting-value" *ngIf="setting.type === 'text'">{{ setting.value }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="setting-actions">
+            <button class="btn btn-secondary" (click)="resetToDefaults()">Reset to Defaults</button>
+            <button class="btn btn-primary" (click)="saveAllSettings()">Save Changes</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Account Settings Tab -->
+      <div class="tab-content" *ngIf="activeTab === 'account'">
+        <div class="section-card">
+          <h2>Account Settings</h2>
+          <p class="section-subtitle">Manage your account security and preferences</p>
+
+          <div class="settings-list">
+            <div class="setting-item" *ngFor="let setting of accountSettings">
+              <div class="setting-info">
+                <p class="setting-label">{{ setting.label }}</p>
+                <p class="setting-description">{{ setting.description }}</p>
+              </div>
+              <div class="setting-control">
+                <!-- Toggle -->
+                <label class="toggle-switch" *ngIf="setting.type === 'toggle'">
+                  <input type="checkbox" [checked]="setting.value" (change)="onSettingChange(setting.id, $any($event).target.checked)">
+                  <span class="toggle-slider"></span>
+                </label>
+
+                <!-- Select -->
+                <select class="form-input select-small" *ngIf="setting.type === 'select'" [value]="setting.value">
+                  <option *ngFor="let option of setting.options" [value]="option.value">{{ option.label }}</option>
+                </select>
+
+                <!-- Text Display -->
+                <span class="setting-value" *ngIf="setting.type === 'text'">{{ setting.value }}</span>
+
+                <!-- Action Button -->
+                <button class="btn btn-secondary btn-small" *ngIf="setting.id === 'connected-apps'">Manage</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="setting-actions">
+            <button class="btn btn-secondary">Cancel</button>
+            <button class="btn btn-primary" (click)="saveAllSettings()">Save Changes</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notification Settings Tab -->
+      <div class="tab-content" *ngIf="activeTab === 'notifications'">
+        <div class="section-card">
+          <h2>Notification Settings</h2>
+          <p class="section-subtitle">Control how and when you receive notifications</p>
+
+          <div class="settings-list">
+            <div class="setting-item" *ngFor="let setting of notificationSettings">
+              <div class="setting-info">
+                <p class="setting-label">{{ setting.label }}</p>
+                <p class="setting-description">{{ setting.description }}</p>
+              </div>
+              <div class="setting-control">
+                <!-- Toggle -->
+                <label class="toggle-switch" *ngIf="setting.type === 'toggle'">
+                  <input type="checkbox" [checked]="setting.value" (change)="onSettingChange(setting.id, $any($event).target.checked)">
+                  <span class="toggle-slider"></span>
+                </label>
+
+                <!-- Select -->
+                <select class="form-input select-small" *ngIf="setting.type === 'select'" [value]="setting.value">
+                  <option *ngFor="let option of setting.options" [value]="option.value">{{ option.label }}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="setting-actions">
+            <button class="btn btn-secondary">Cancel</button>
+            <button class="btn btn-primary" (click)="saveAllSettings()">Save Changes</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Data & Privacy Settings Tab -->
+      <div class="tab-content" *ngIf="activeTab === 'data'">
+        <div class="section-card">
+          <h2>Data & Privacy</h2>
+          <p class="section-subtitle">Manage your data, backups, and privacy settings</p>
+
+          <div class="settings-list">
+            <div class="setting-item" *ngFor="let setting of dataSettings">
+              <div class="setting-info">
+                <p class="setting-label">{{ setting.label }}</p>
+                <p class="setting-description">{{ setting.description }}</p>
+              </div>
+              <div class="setting-control">
+                <!-- Toggle -->
+                <label class="toggle-switch" *ngIf="setting.type === 'toggle'">
+                  <input type="checkbox" [checked]="setting.value" (change)="onSettingChange(setting.id, $any($event).target.checked)">
+                  <span class="toggle-slider"></span>
+                </label>
+
+                <!-- Select -->
+                <select class="form-input select-small" *ngIf="setting.type === 'select'" [value]="setting.value">
+                  <option *ngFor="let option of setting.options" [value]="option.value">{{ option.label }}</option>
+                </select>
+
+                <!-- Text Display -->
+                <span class="setting-value" *ngIf="setting.type === 'text'">{{ setting.value }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Data Actions -->
+          <div class="data-actions-section">
+            <h3>Data Management</h3>
+            <div class="action-buttons">
+              <button class="btn btn-secondary" (click)="exportData()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                Export Data
+              </button>
+              <button class="btn btn-secondary" (click)="importData()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                Import Data
+              </button>
+            </div>
+          </div>
+
+          <div class="setting-actions">
+            <button class="btn btn-secondary">Cancel</button>
+            <button class="btn btn-primary" (click)="saveAllSettings()">Save Changes</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>

@@ -1,0 +1,167 @@
+<div class="new-task-container">
+  <div class="new-task-card">
+    <!-- Header -->
+    <div class="form-header">
+      <div>
+        <h1>Create New Task</h1>
+        <p class="form-subtitle">Add a new task to your project</p>
+      </div>
+      <button type="button" class="btn-close" (click)="cancel()" title="Close">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Form -->
+    <form (ngSubmit)="submitForm()" #taskForm="ngForm">
+      <!-- Title -->
+      <div class="form-group">
+        <label for="title" class="form-label">Task Title *</label>
+        <input
+          type="text"
+          id="title"
+          placeholder="Enter task title"
+          [(ngModel)]="form.title"
+          name="title"
+          class="form-input"
+          [class.error]="errors['title']"
+          maxlength="100">
+        <div class="char-count">{{ form.title.length }}/100</div>
+        <div class="error-message" *ngIf="errors['title']">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          {{ errors['title'] }}
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="form-group">
+        <label for="description" class="form-label">Description</label>
+        <textarea
+          id="description"
+          placeholder="Describe the task in detail..."
+          [(ngModel)]="form.description"
+          name="description"
+          class="form-textarea"
+          [class.error]="errors['description']"
+          maxlength="1000"
+          rows="4"></textarea>
+        <div class="char-count">{{ form.description.length }}/1000</div>
+        <div class="error-message" *ngIf="errors['description']">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          {{ errors['description'] }}
+        </div>
+      </div>
+
+      <!-- Grid: Priority, Status, Category -->
+      <div class="form-grid-3">
+        <div class="form-group">
+          <label for="priority" class="form-label">Priority *</label>
+          <select
+            id="priority"
+            [(ngModel)]="form.priority"
+            name="priority"
+            class="form-select">
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="status" class="form-label">Status *</label>
+          <select
+            id="status"
+            [(ngModel)]="form.status"
+            name="status"
+            class="form-select">
+            <option value="todo">To Do</option>
+            <option value="in-progress">In Progress</option>
+            <option value="completed">Completed</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="category" class="form-label">Category *</label>
+          <select
+            id="category"
+            [(ngModel)]="form.category"
+            name="category"
+            class="form-select">
+            <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Grid: Due Date, Assignee -->
+      <div class="form-grid-2">
+        <div class="form-group">
+          <label for="dueDate" class="form-label">Due Date</label>
+          <input
+            type="date"
+            id="dueDate"
+            [(ngModel)]="form.dueDate"
+            name="dueDate"
+            class="form-input"
+            [class.error]="errors['dueDate']"
+            [min]="getTodayDate()">
+          <div class="error-message" *ngIf="errors['dueDate']">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            {{ errors['dueDate'] }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="assignee" class="form-label">Assign To</label>
+          <select
+            id="assignee"
+            [(ngModel)]="form.assignee"
+            name="assignee"
+            class="form-select">
+            <option value="">Unassigned</option>
+            <option *ngFor="let assignee of assignees" [value]="assignee">{{ assignee }}</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="isSubmitting">
+          Cancel
+        </button>
+        <button type="submit" class="btn btn-primary" [disabled]="isSubmitting">
+          <span *ngIf="!isSubmitting">Create Task</span>
+          <span *ngIf="isSubmitting">
+            <svg class="spinner" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+            </svg>
+            Creating...
+          </span>
+        </button>
+      </div>
+    </form>
+
+    <!-- Info Box -->
+    <div class="info-box">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="16" x2="12" y2="12"></line>
+        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+      </svg>
+      <span>Fields marked with <strong>*</strong> are required</span>
+    </div>
+  </div>
+</div>

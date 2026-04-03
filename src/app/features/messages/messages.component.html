@@ -1,0 +1,83 @@
+<div class="messages-page" [class.profile-open]="profilePanelOpen">
+  <div class="messages-sidebar">
+    <div class="messages-header">
+      <h2>Messages</h2>
+      <input type="text" placeholder="Search conversations" [(ngModel)]="searchQuery" />
+    </div>
+
+    <ul class="conversation-list">
+      <li *ngFor="let conv of filteredConversations" class="conversation-item" [class.active]="selectedConversation?.id === conv.id" (click)="selectConversation(conv)">
+        <div class="avatar" [style.background]="conv.online ? 'linear-gradient(135deg, var(--success), var(--primary))' : 'var(--bg-secondary)'">{{ conv.avatar }}</div>
+        <div class="conversation-meta">
+          <div class="conversation-name">{{ conv.name }}</div>
+          <div class="conversation-last">{{ conv.lastMessage }}</div>
+        </div>
+        <span *ngIf="conv.unread > 0" class="unread-count">{{ conv.unread }}</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="messages-content" *ngIf="selectedConversation; else noConversation">
+    <div class="chat-header">
+      <div class="chat-title">
+        <div class="avatar" (click)="toggleProfilePanel()" [style.background]="selectedConversation.online ? 'linear-gradient(135deg, var(--success), var(--primary))' : 'var(--bg-secondary)'" title="Open profile">{{ selectedConversation.avatar }}</div>
+        <div>
+          <h3>{{ selectedConversation.name }}</h3>
+          <small>{{ selectedConversation.online ? 'Online' : 'Offline' }}</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-history">
+      <div *ngFor="let msg of selectedConversation?.messages" class="chat-message" [class.outgoing]="msg.outgoing">
+        <div class="message-body">
+          <div class="message-text">{{ msg.content }}</div>
+          <div *ngIf="msg.attachment" class="attachment-preview">
+            📎 {{ msg.attachment.name }} ({{ (msg.attachment.size / 1024) | number:'1.0-0' }} KB)
+          </div>
+          <div class="message-time">{{ msg.timestamp }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-tools">
+      <div class="emoji-toolbar">
+        <button type="button" class="emoji-btn" (click)="addEmoji('😀')">😀</button>
+        <button type="button" class="emoji-btn" (click)="addEmoji('🎉')">🎉</button>
+        <button type="button" class="emoji-btn" (click)="addEmoji('👍')">👍</button>
+        <button type="button" class="emoji-btn" (click)="addEmoji('❤️')">❤️</button>
+        <button type="button" class="emoji-btn" (click)="addEmoji('🚀')">🚀</button>
+      </div>
+      <div class="file-upload-row">
+        <input type="file" id="fileUpload" (change)="handleFileUpload($event)" hidden />
+        <label for="fileUpload" class="btn btn-secondary">Attach File</label>
+      </div>
+    </div>
+
+    <div class="chat-input">
+      <input type="text" placeholder="Type a message..." [(ngModel)]="newMessage" (keydown.enter)="sendMessage()" />
+      <button class="btn btn-primary" (click)="sendMessage()" [disabled]="!newMessage.trim()">Send</button>
+    </div>
+  </div>
+
+  <div class="messages-profile" *ngIf="selectedConversation && profilePanelOpen">
+    <div class="profile-card">
+      <button type="button" class="profile-close" (click)="toggleProfilePanel()">×</button>
+      <div class="profile-avatar">{{ selectedConversation.avatar }}</div>
+      <h3>{{ selectedConversation.name }}</h3>
+      <span class="profile-status" [class.online]="selectedConversation.online">{{ selectedConversation.online ? 'Online' : 'Offline' }}</span>
+      <p class="profile-meta">{{ selectedConversation.messages.length }} messages, {{ selectedConversation.unread }} unread</p>
+      <div class="profile-bio">
+        <p><strong>About:</strong></p>
+        <p>Hey there! Chat with {{ selectedConversation.name }} about projects, timelines, and updates.</p>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #noConversation>
+    <div class="no-conversation">
+      <h3>No conversation selected</h3>
+      <p>Select a conversation to view messages.</p>
+    </div>
+  </ng-template>
+</div>
