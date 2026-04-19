@@ -1,7 +1,10 @@
 .projects-container {
-  padding: var(--spacing-2xl);
-  max-width: 1400px;
-  margin: 0 auto;
+  // padding: var(--spacing-2xl);
+  // max-width: 1400px;
+  // margin: 0 auto;
+  min-height: 100vh;
+  padding: var(--spacing-2xl) var(--spacing-lg);
+  // background-color: var(--bg-primary);
 
   @media (max-width: 1024px) {
     padding: var(--spacing-xl);
@@ -53,8 +56,10 @@
   margin-bottom: var(--spacing-2xl);
 
   .stat-card {
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
+    // background: var(--card-bg);
+    // border: 1px solid var(--border-color);
+    background-color: var(--white);
+    border: 1px solid var(--border);
     border-radius: var(--radius-md);
     padding: var(--spacing-lg);
     text-align: center;
@@ -91,7 +96,7 @@
   @media (max-width: 768px) {
     flex-direction: column;
 
-    > * {
+    >* {
       width: 100%;
     }
   }
@@ -110,9 +115,11 @@
     width: 100%;
     padding: var(--spacing-md) var(--spacing-md) var(--spacing-md) var(--spacing-lg);
     padding-right: calc(var(--spacing-lg) + 24px);
-    border: 1px solid var(--border-color);
+    // border: 1px solid var(--border-color);
+    border: 1px solid var(--border);
     border-radius: var(--radius-md);
-    background: var(--input-bg);
+    // background: var(--input-bg);
+    background-color: var(--white);
     color: var(--text-primary);
     font-size: var(--font-size-base);
     transition: all 0.2s ease;
@@ -147,7 +154,7 @@
     width: 100%;
     flex-direction: column;
 
-    > * {
+    >* {
       width: 100%;
     }
   }
@@ -155,9 +162,11 @@
 
 .view-toggle {
   display: flex;
-  border: 1px solid var(--border-color);
+  // border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  background: var(--input-bg);
+  // background: var(--input-bg);
+  background-color: var(--white);
+  border: 1px solid var(--border);
   padding: 4px;
   gap: 4px;
 
@@ -187,9 +196,11 @@
 
 .filter-select {
   padding: var(--spacing-md);
-  border: 1px solid var(--border-color);
+  // border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  background: var(--input-bg);
+  // background: var(--input-bg);
+  background-color: var(--white);
+  border: 1px solid var(--border);
   color: var(--text-primary);
   cursor: pointer;
   font-size: var(--font-size-base);
@@ -227,8 +238,10 @@
 }
 
 .project-card {
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
+  // background: var(--card-bg);
+  // border: 1px solid var(--border-color);
+  background-color: var(--white);
+  border: 1px solid var(--border);
   border-radius: var(--radius-md);
   border-left: 4px solid var(--primary);
   padding: var(--spacing-lg);
@@ -440,8 +453,10 @@
 
 /* List View */
 .projects-list {
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
+  // background: var(--card-bg);
+  // border: 1px solid var(--border-color);
+  background-color: var(--white);
+  border: 1px solid var(--border);
   border-radius: var(--radius-md);
   overflow: hidden;
 
