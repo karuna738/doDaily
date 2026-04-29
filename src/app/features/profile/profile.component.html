@@ -113,19 +113,6 @@
               <textarea class="form-textarea" [value]="profileData.bio"></textarea>
             </div>
 
-            <div class="form-group">
-              <label class="form-label">Timezone</label>
-              <select class="form-input">
-                <option [selected]="profileData.timezone === 'UTC-8 (Pacific Time)'">UTC-8 (Pacific Time)</option>
-                <option>UTC-7 (Mountain Time)</option>
-                <option>UTC-6 (Central Time)</option>
-                <option>UTC-5 (Eastern Time)</option>
-                <option>UTC+0 (UTC)</option>
-                <option>UTC+1 (Central European Time)</option>
-                <option>UTC+5:30 (India Standard Time)</option>
-              </select>
-            </div>
-
             <div class="form-actions">
               <button type="button" class="btn btn-secondary">Cancel</button>
               <button type="button" class="btn btn-primary" (click)="saveChanges()">Save Changes</button>
@@ -139,54 +126,6 @@
         <div class="section-card">
           <h2>Preferences</h2>
           <p class="section-subtitle">Customize how you experience doDaily</p>
-
-          <!-- Notification Preferences -->
-          <div class="preferences-section">
-            <h3 class="preferences-title">Notifications</h3>
-            <div class="preference-item">
-              <div class="preference-info">
-                <p class="preference-label">Email Notifications</p>
-                <p class="preference-desc">Receive updates via email</p>
-              </div>
-              <label class="toggle-switch">
-                <input type="checkbox" [checked]="preferences.emailNotifications">
-                <span class="toggle-slider"></span>
-              </label>
-            </div>
-
-            <div class="preference-item">
-              <div class="preference-info">
-                <p class="preference-label">Push Notifications</p>
-                <p class="preference-desc">Get instant notifications</p>
-              </div>
-              <label class="toggle-switch">
-                <input type="checkbox" [checked]="preferences.pushNotifications">
-                <span class="toggle-slider"></span>
-              </label>
-            </div>
-
-            <div class="preference-item">
-              <div class="preference-info">
-                <p class="preference-label">Weekly Digest</p>
-                <p class="preference-desc">Summary of your weekly activity</p>
-              </div>
-              <label class="toggle-switch">
-                <input type="checkbox" [checked]="preferences.weeklyDigest">
-                <span class="toggle-slider"></span>
-              </label>
-            </div>
-
-            <div class="preference-item">
-              <div class="preference-info">
-                <p class="preference-label">Task Reminders</p>
-                <p class="preference-desc">Get reminded about upcoming tasks</p>
-              </div>
-              <label class="toggle-switch">
-                <input type="checkbox" [checked]="preferences.taskReminders">
-                <span class="toggle-slider"></span>
-              </label>
-            </div>
-          </div>
 
           <!-- Display Preferences -->
           <div class="preferences-section">
@@ -249,18 +188,6 @@
             <h3 class="security-title">Password</h3>
             <p class="security-desc">Last changed 3 months ago</p>
             <button class="btn btn-secondary">Change Password</button>
-          </div>
-
-          <!-- Two-Factor Authentication -->
-          <div class="security-section">
-            <div class="security-header">
-              <div>
-                <h3 class="security-title">Two-Factor Authentication</h3>
-                <p class="security-desc">Add an extra layer of security to your account</p>
-              </div>
-              <span class="badge badge-warning">Disabled</span>
-            </div>
-            <button class="btn btn-secondary">Enable 2FA</button>
           </div>
 
           <!-- Login Sessions -->
